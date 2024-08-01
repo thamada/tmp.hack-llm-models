@@ -118,33 +118,33 @@ def load_and_export(model_path, output_path):
     model_paths = sorted(list(Path(model_path).glob('consolidated.*.pth')))
     models = [torch.load(p, map_location='cpu', weights_only=True) for p in model_paths]
 
-    num = 0
+    total_params = 0
+    total_bytes = 0
 
     for m in models:
         for i, key in enumerate(m.keys()):
-            num += get_n_params(m[key])
-            
+            n_param = get_n_params(m[key])
+            n_bytes = n_param * m[key].element_size()
+
+            total_params += n_param
+            total_bytes += n_bytes
+
+            '''
             print (i,
                    key,
                    type(m[key]), 
                    m[key].size(),
                    ': ',
-                   m[key].dim()
+                   m[key].dim(),
+                   m[key].dtype,
+                   m[key].element_size()
                    )
-    
+            '''
 
-    print ('Total size of parameters: ', num)
-    print ('Total size of parameters in Billion: ', num / 1000000000.)
-
-
-
-
-    exit(0)
-#    print (models)
-    state_dict = concat_weights(models)
-#    print (state_dict)
-    del models
-    export(params, state_dict, output_path)
+    print ('Total number of parameters: %d' % total_params)
+    print ('%.4f B' % (total_params / 1000000000.))
+    print ('%d Bytes' % total_bytes)
+    print ('%.4f GB' % (total_bytes / (1024.*1024.*1024.)))
 
 
 if __name__ == '__main__':
