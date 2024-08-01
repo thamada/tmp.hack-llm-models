@@ -114,22 +114,38 @@ def load_and_export(model_path, output_path):
 
     m0 = models[0]
 
+    '''
     x = m0['layers.0.attention.wq.weight']
     print (type(x))
     print (x.size())
+    print (dir(x))
+    print ('dimension:', x.dim() )
+
+    print (len(x.shape))
+
     sz_x = x.shape[0]
     sz_y = x.shape[1]
 
     print ('size: ', sz_x, ' x ', sz_y)
+    '''
 
-    '''
+
     for i, key in enumerate(m0.keys()):
-        if ('layers.0' in key):
-            print (i, key, type(m0[key]), m0[key].size())
-    '''
+        print (i,
+               key,
+               type(m0[key]), 
+               m0[key].size(),
+               ': ',
+               m0[key].dim()
+               )
     
     exit(0)
+
+
+
     '''
+        if ('layers.5' in key):
+
     print ("+"*100)
     print (type(m0))
     print ("+"*100)
