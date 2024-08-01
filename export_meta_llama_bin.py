@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 This script exports the Llama 2 weights in llama2c.bin format.
 """
@@ -108,10 +110,26 @@ def load_and_export(model_path, output_path):
         print(params)
 
     model_paths = sorted(list(Path(model_path).glob('consolidated.*.pth')))
-    models = [torch.load(p, map_location='cpu') for p in model_paths]
-    '''
+    models = [torch.load(p, map_location='cpu', weights_only=True) for p in model_paths]
+
     m0 = models[0]
 
+    x = m0['layers.0.attention.wq.weight']
+    print (type(x))
+    print (x.size())
+    sz_x = x.shape[0]
+    sz_y = x.shape[1]
+
+    print ('size: ', sz_x, ' x ', sz_y)
+
+    '''
+    for i, key in enumerate(m0.keys()):
+        if ('layers.0' in key):
+            print (i, key, type(m0[key]), m0[key].size())
+    '''
+    
+    exit(0)
+    '''
     print ("+"*100)
     print (type(m0))
     print ("+"*100)
